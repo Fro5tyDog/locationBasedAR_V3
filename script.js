@@ -476,40 +476,39 @@ const handleOrientationEvent = (rotateDegrees) => {
 };
 
 // Update runCalculation to accept alpha as a parameter
-function calcBearing(lat1, long1, lat2, long2) {
-    // Convert latitude and longitude to radians
+function calcBearing(lat1, lon1, lat2, lon2) {
+    // Convert latitude and longitude from degrees to radians
     lat1 = toRadians(lat1);
-    long1 = toRadians(long1);
+    lon1 = toRadians(lon1);
     lat2 = toRadians(lat2);
-    long2 = toRadians(long2);
-    
+    lon2 = toRadians(lon2);
+
     // Calculate the bearing
-    let bearing = Math.atan2(
-        Math.sin(long2 - long1) * Math.cos(lat2),
-        Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(long2 - long1)
-    );
-    
-    // Convert the bearing to degrees
+    let y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+    let x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+    let bearing = Math.atan2(y, x);
     bearing = toDegrees(bearing);
     
-    // Ensure the bearing is positive
+    // Ensure the bearing is within 0-360
     return (bearing + 360) % 360;
 }
 
-
 function runCalculation(alpha) {
     const lat1 = current.latitude;
-    const long1 = current.longitude;
+    const lon1 = current.longitude;
     const lat2 = targetDetails.lat;
-    const long2 = targetDetails.lng;
+    const lon2 = targetDetails.lng;
 
     // Calculate the bearing to the target
-    const bearing = calcBearing(lat1, long1, lat2, long2);
+    const bearing = calcBearing(lat1, lon1, lat2, lon2);
 
-    // Adjust the bearing by alpha to get the final direction
-    direction = (bearing + alpha + 360) % 360;
-    
-    return direction; // Rounded to the nearest degree
+    // Calculate the direction by adjusting the bearing with the phone's orientation
+    const direction = (bearing - alpha + 360) % 360;
+
+    consoleText = document.getElementById('console-text');
+    consoleText.innerHTML = `Bearing to target: ${bearing}°\nDevice orientation (alpha): ${alpha}°\nCalculated direction for arrow: ${direction}°`;
+
+    return direction.toFixed(0); // Round to the nearest degree
 }
 
 

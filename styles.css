@@ -1,0 +1,153 @@
+/* Styling for the circles */
+
+body {
+    overflow: hidden !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+}
+.circle-container {
+    position: fixed;
+    top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 10; /* Make sure this is above the A-Frame scene */
+    pointer-events: auto; /* Enable pointer events */
+}
+
+.circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: white;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    pointer-events: auto; /* Ensure the circles can receive pointer events */
+}
+
+.circle img {
+    width: 80%;
+    height: auto;
+}
+
+.circle-center {
+    margin: 0 auto;
+    background-color: #0ee85e;
+    position: relative;
+}
+
+.arrow {
+    position: absolute;
+    width: 50%; /* Adjust the width and height as needed */
+    height: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: url("https://p9n2c8y2.rocketcdn.me/wp-content/uploads/2021/05/24.png.webp") center no-repeat;
+    background-size: 115% 115%;
+    z-index: 2000;
+}
+
+
+.text-container {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    top: 90px;
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+}
+
+#location-display {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px black;
+    font-family: Arial, sans-serif;
+    white-space: normal; 
+}
+
+/* Dropdown styling */
+.dropdown-container {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10; /* Make sure this is above the A-Frame scene */
+    pointer-events: auto; /* Enable pointer events */
+}
+
+.dropdown-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: white;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Selected state */
+.dropdown-circle.selected {
+    background-color: green; /* Selected turns green */
+}
+
+.dropdown-circle img {
+    width: 80%;
+    height: auto;
+}
+
+/* CSS to center the start div */
+.start {
+    position: absolute;
+    background-color: gray;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    z-index: 15;
+}
+
+/* CSS for the image */
+.start img {
+    width: 200px; /* Set the width of the image */
+    height: auto; /* Maintain aspect ratio */
+}
+
+/* Center the button below the image */
+.start button {
+    margin: 10px; /* Add space between image and button */
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    background-color: rgb(10, 156, 10);
+    border: 2px solid rgb(97, 97, 97);
+}
+
+/* Greys out all other UI elements before "Tap to Start" */
+.greyed-out {
+    opacity: 0.5; /* Make them semi-transparent */
+    pointer-events: none; /* Disable interaction */
+}
+
+/* Hide the start screen once clicked */
+.hidden {
+    display: none;
+    pointer-events: none; /* Disable interaction */
+}

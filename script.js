@@ -447,7 +447,7 @@ function toDegrees(radians) {
 var current = { latitude: null, longitude: null };
 // var target = { latitude: 0, longitude: 0 };
 var lastAlpha = 0;
-var direction = 0;
+let direction = 0;
 
 // function to initialize geolocation and device orientation. runs automatically
 function init() {
@@ -503,7 +503,8 @@ function runCalculation(alpha) {
     const bearing = calcBearing(lat1, lon1, lat2, lon2);
 
     // Calculate the direction by adjusting the bearing with the phone's orientation
-    const direction = (bearing - alpha + 360) % 360;
+    
+    direction = (bearing - alpha + 360) % 360;
 
     consoleText = document.getElementById('console-text');
     consoleText.innerHTML = `Bearing to target: ${bearing}°\nDevice orientation (alpha): ${alpha}°\nCalculated direction for arrow: ${direction}°`;

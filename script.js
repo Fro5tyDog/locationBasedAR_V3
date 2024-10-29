@@ -273,6 +273,7 @@ function selectedTarget(name){
                 targetDetails.max = model.visibilityRange.max;
                 targetDetails.lat = model.lat;
                 targetDetails.lng = model.lng;
+                startCompass();
                 appLoop();
             };
         })
@@ -446,3 +447,94 @@ function toDegrees(radians) {
     return radians * 180 / Math.PI;
 }
 
+
+// ##################################################################################################
+var current = { latitude: null, longitude: null };
+var lastAlpha = 0;
+var direction = 0;
+const isIOS =
+    navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+    navigator.userAgent.match(/AppleWebKit/);
+// const startBtn = document.querySelector(".start-btn");
+const geolocationOptions = { enableHighAccuracy: true };
+
+// function to initialize geolocation and device orientation. runs automatically
+function init() {
+    // startBtn.addEventListener("click", startCompass);
+    navigator.geolocation.watchPosition(setCurrentPosition, null, geolocationOptions);
+    if (!isIOS) {
+        window.addEventListener("deviceorientationabsolute", runCalculation);
+    }
+
+    // Start the UI updates
+    updateUI();
+}
+
+
+// on clicking the start compass button, request permission to use device orientation.
+// only IOS devices need to click the button
+function startCompass() {
+    if (isIOS) {
+        DeviceOrientationEvent.requestPermission()
+            .then((response) => {
+            if (response === "granted") {
+                window.addEventListener("deviceorientation", runCalculation);
+            } else {
+                alert("has to be allowed!");
+            }
+            })
+            .catch(() => alert("not supported"));
+    }
+}
+
+// takes values retrieved from th geolocation API and stores them in the current object
+// for use in calculating compass direction and distance
+function setCurrentPosition(position) {
+    current.latitude = position.coords.latitude;
+    current.longitude = position.coords.longitude;
+}
+
+// runs the calculation for getting the direction which the arrow needs to point
+function runCalculation(event) {
+    var alpha = Math.abs(360 - event.webkitCompassHeading) || event.alpha;
+
+    if (alpha == null || Math.abs(alpha - lastAlpha) > 1) {
+    var lat1 = current.latitude * (Math.PI / 180);
+    var lon1 = current.longitude * (Math.PI / 180);
+    var lat2 = targetDetails.lat * (Math.PI / 180);
+    var lon2 = targetDetails.lng * (Math.PI / 180);
+
+    // calculate compass direction
+    var y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+    var x =
+        Math.cos(lat1) * Math.sin(lat2) -
+        Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+    var bearing = Math.atan2(y, x) * (180 / Math.PI);
+
+    direction = (alpha + bearing + 360) % 360;
+    direction = direction.toFixed(0);
+
+    lastAlpha = alpha;
+
+    var R = 6371; // Radius of the earth in km
+    var dLat = lat2 - lat1; // below
+    var dLon = lon2 - lon1;
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    distance = R * c; // Distance in km
+    distance = distance * 1000; // Convert to meters    
+    }
+}   
+
+
+// starts updating the UI.
+function updateUI() {
+    // Update arrow rotation
+    const arrow = document.querySelector(".arrow");
+    arrow.style.transform = `translate(-50%, -50%) rotate(${direction}deg)`;
+    requestAnimationFrame(updateUI);
+}
+
+init();

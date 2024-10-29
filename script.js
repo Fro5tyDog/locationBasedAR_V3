@@ -480,8 +480,8 @@ function runCalculation(alpha) {
     if (alpha == null || Math.abs(alpha - lastAlpha) > 1) {
         var lat1 = current.latitude * (Math.PI / 180);
         var lon1 = current.longitude * (Math.PI / 180);
-        var lat2 = target.latitude * (Math.PI / 180);
-        var lon2 = target.longitude * (Math.PI / 180);
+        var lat2 = targetDetails.lat * (Math.PI / 180);
+        var lon2 = targetDetails.lng * (Math.PI / 180);
 
         // Calculate compass direction
         var y = Math.sin(lon2 - lon1) * Math.cos(lat2);

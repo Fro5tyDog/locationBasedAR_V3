@@ -270,6 +270,7 @@ function selectedTarget(name){
                 targetDetails.lat = model.lat;
                 targetDetails.lng = model.lng;
                 appLoop();
+                init();
             };
         })
     }
@@ -532,7 +533,6 @@ function updateUI() {
 // Initialize compass and location tracking when DOM loads
 document.addEventListener('DOMContentLoaded', function () {
     initializeMyApp();
-    init();
 });
 
 

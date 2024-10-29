@@ -459,44 +459,77 @@ var direction = 0;
 function init() {
     if (window.DeviceOrientationEvent) {
         window.addEventListener(
-          "deviceorientation",
-          (event) => {
-            const rotateDegrees = event.alpha; // alpha: rotation around z-axis
-            const leftToRight = event.gamma; // gamma: left to right
-            const frontToBack = event.beta; // beta: front back motion
-      
-            handleOrientationEvent(frontToBack, leftToRight, rotateDegrees);
-          },
-          true,
+            "deviceorientation",
+            (event) => {
+                const rotateDegrees = event.alpha; // alpha: rotation around z-axis
+                handleOrientationEvent(rotateDegrees);
+            },
+            true
         );
-      }
-      
-      const handleOrientationEvent = (frontToBack, leftToRight, rotateDegrees) => {
-        // do something amazing
-        console.log(rotateDegrees);
-        document.getElementById('start-button').innerHTML = `${rotateDegrees}`;
-      };
+    }
 
     // Start the UI updates
     updateUI();
 }
 
+// Pass the alpha (rotateDegrees) to runCalculation
+const handleOrientationEvent = (rotateDegrees) => {
+    // Call runCalculation with the fetched alpha value
+    runCalculation(rotateDegrees);
+
+    // Display the alpha value as an example
+    document.getElementById("start-button").innerHTML = `${rotateDegrees}`;
+};
+
+// Update runCalculation to accept alpha as a parameter
+function runCalculation(alpha) {
+    if (alpha == null || Math.abs(alpha - lastAlpha) > 1) {
+        var lat1 = current.latitude * (Math.PI / 180);
+        var lon1 = current.longitude * (Math.PI / 180);
+        var lat2 = target.latitude * (Math.PI / 180);
+        var lon2 = target.longitude * (Math.PI / 180);
+
+        // Calculate compass direction
+        var y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+        var x =
+            Math.cos(lat1) * Math.sin(lat2) -
+            Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+        var bearing = Math.atan2(y, x) * (180 / Math.PI);
+
+        // Update direction using alpha and bearing
+        direction = (alpha + bearing + 360) % 360;
+        direction = direction.toFixed(0);
+
+        lastAlpha = alpha;
+
+        // Calculate distance (if needed for other uses)
+        var R = 6371; // Radius of the Earth in km
+        var dLat = lat2 - lat1;
+        var dLon = lon2 - lon1;
+        var a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        distance = R * c * 1000; // Distance in meters
+    }
+}
+
 
 // on clicking the start compass button, request permission to use device orientation.
 // only IOS devices need to click the button
-function startCompass() {
-    if (isIOS) {
-        DeviceOrientationEvent.requestPermission()
-            .then((response) => {
-            if (response === "granted") {
-                window.addEventListener("deviceorientation", runCalculation);
-            } else {
-                alert("has to be allowed!");
-            }
-            })
-            .catch(() => alert("not supported"));
-    }
-}
+// function startCompass() {
+//     if (isIOS) {
+//         DeviceOrientationEvent.requestPermission()
+//             .then((response) => {
+//             if (response === "granted") {
+//                 window.addEventListener("deviceorientation", runCalculation);
+//             } else {
+//                 alert("has to be allowed!");
+//             }
+//             })
+//             .catch(() => alert("not supported"));
+//     }
+// }
 
 // takes values retrieved from th geolocation API and stores them in the current object
 // for use in calculating compass direction and distance
@@ -506,38 +539,38 @@ function setCurrentPosition(position) {
 }
 
 // runs the calculation for getting the direction which the arrow needs to point
-function runCalculation(event) {
-    var alpha = Math.abs(360 - event.webkitCompassHeading) || event.alpha;
+// function runCalculation(event) {
+//     var alpha = Math.abs(360 - event.webkitCompassHeading) || event.alpha;
 
-    if (alpha == null || Math.abs(alpha - lastAlpha) > 1) {
-    var lat1 = current.latitude * (Math.PI / 180);
-    var lon1 = current.longitude * (Math.PI / 180);
-    var lat2 = target.latitude * (Math.PI / 180);
-    var lon2 = target.longitude * (Math.PI / 180);
+//     if (alpha == null || Math.abs(alpha - lastAlpha) > 1) {
+//     var lat1 = current.latitude * (Math.PI / 180);
+//     var lon1 = current.longitude * (Math.PI / 180);
+//     var lat2 = target.latitude * (Math.PI / 180);
+//     var lon2 = target.longitude * (Math.PI / 180);
 
-    // calculate compass direction
-    var y = Math.sin(lon2 - lon1) * Math.cos(lat2);
-    var x =
-        Math.cos(lat1) * Math.sin(lat2) -
-        Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
-    var bearing = Math.atan2(y, x) * (180 / Math.PI);
+//     // calculate compass direction
+//     var y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+//     var x =
+//         Math.cos(lat1) * Math.sin(lat2) -
+//         Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+//     var bearing = Math.atan2(y, x) * (180 / Math.PI);
 
-    direction = (alpha + bearing + 360) % 360;
-    direction = direction.toFixed(0);
+//     direction = (alpha + bearing + 360) % 360;
+//     direction = direction.toFixed(0);
 
-    lastAlpha = alpha;
+//     lastAlpha = alpha;
 
-    var R = 6371; // Radius of the earth in km
-    var dLat = lat2 - lat1; // below
-    var dLon = lon2 - lon1;
-    var a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    distance = R * c; // Distance in km
-    distance = distance * 1000; // Convert to meters    
-    }
-}   
+//     var R = 6371; // Radius of the earth in km
+//     var dLat = lat2 - lat1; // below
+//     var dLon = lon2 - lon1;
+//     var a =
+//         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+//         Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+//     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+//     distance = R * c; // Distance in km
+//     distance = distance * 1000; // Convert to meters    
+//     }
+// }   
 
 // starts updating the UI.
 function updateUI() {

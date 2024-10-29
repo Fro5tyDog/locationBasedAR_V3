@@ -461,9 +461,6 @@ function init() {
             true
         );
     }
-
-    // Start the UI updates
-    updateUI();
 }
 
 // Pass the alpha (rotateDegrees) to runCalculation
@@ -473,6 +470,9 @@ const handleOrientationEvent = (rotateDegrees) => {
 
     // Display the alpha value as an example
     document.getElementById("start-button").innerHTML = `${rotateDegrees}`;
+
+    // Start the UI updates
+    updateUI();
 };
 
 // Update runCalculation to accept alpha as a parameter
@@ -496,6 +496,7 @@ function calcBearing(lat1, long1, lat2, long2) {
     return (bearing + 360) % 360;
 }
 
+
 function runCalculation(alpha) {
     const lat1 = current.latitude;
     const long1 = current.longitude;
@@ -508,7 +509,7 @@ function runCalculation(alpha) {
     // Adjust the bearing by alpha to get the final direction
     direction = (bearing - alpha) % 360;
     
-    return direction.toFixed(0); // Rounded to the nearest degree
+    return direction; // Rounded to the nearest degree
 }
 
 
@@ -524,7 +525,7 @@ function setCurrentPosition(position) {
 function updateUI() {
     // Update arrow rotation
     const arrow = document.querySelector(".arrow");
-    arrow.style.transform = `translate(-50%, -50%) rotate(${direction}deg)`;
+    arrow.style.transform = `rotate(${direction}deg)`;
     requestAnimationFrame(updateUI);
 }
 

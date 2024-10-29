@@ -1,8 +1,3 @@
-// wait for dom to finish loading before loading models and updating UI
-document.addEventListener('DOMContentLoaded', function () {
-        initializeMyApp();
-        init();
-});
 
 // IDs to control the check every frame. 
 let checkPlayerLocationID; // ID of the animationFrame that receives player location data.
@@ -274,6 +269,7 @@ function selectedTarget(name){
                 targetDetails.max = model.visibilityRange.max;
                 targetDetails.lat = model.lat;
                 targetDetails.lng = model.lng;
+                startCompass();
                 appLoop();
             };
         })
@@ -286,11 +282,10 @@ function selectedTarget(name){
 
 // Application loop function that calls the retrieve player data and relative position. 
 function appLoop() {
-    console.log("starting app loop");
+    init();
+    // console.log("starting app loop");
     // Retrieve player position and relative position to closest model.
     getPlayerPosition(findDistanceRelativeToModel);
-
-    startCompass();
 
     requestAnimationFrame(appLoop);
 }
@@ -298,7 +293,7 @@ function appLoop() {
 // function to retrieve player data every frame.
 function getPlayerPosition(findDistanceRelativeToModel){
     try{
-        console.log("getting player position");
+        // console.log("getting player position");
         if(navigator.geolocation){
 
         const options = {
@@ -459,84 +454,87 @@ const isIOS =
     navigator.userAgent.match(/AppleWebKit/);
 const geolocationOptions = { enableHighAccuracy: true };
 
-// function to initialize geolocation and device orientation. runs automatically
+// Initialize geolocation and device orientation
 function init() {
-    // startBtn.addEventListener("click", startCompass);
+    // Continuously update current position with watchPosition
     navigator.geolocation.watchPosition(setCurrentPosition, null, geolocationOptions);
+
+    // Add orientation event listener
     if (!isIOS) {
         window.addEventListener("deviceorientationabsolute", runCalculation);
     }
-
-    // Start the UI updates
-    updateUI();
+    updateUI(); // Start the UI update loop
 }
 
-
-// on clicking the start compass button, request permission to use device orientation.
-// only IOS devices need to click the button
-function startCompass() {
-    console.log("start compass");
-    if (isIOS) {
-        DeviceOrientationEvent.requestPermission()
-            .then((response) => {
-            if (response === "granted") {
-                window.addEventListener("deviceorientation", runCalculation);
-            } else {
-                alert("has to be allowed!");
-            }
-            })
-            .catch(() => alert("not supported"));
-    }
-}
-
-// takes values retrieved from th geolocation API and stores them in the current object
-// for use in calculating compass direction and distance
+// Set current position for use in direction calculation
 function setCurrentPosition(position) {
     current.latitude = position.coords.latitude;
     current.longitude = position.coords.longitude;
 }
 
-// runs the calculation for getting the direction which the arrow needs to point
-function runCalculation(event) {
-    var alpha = Math.abs(360 - event.webkitCompassHeading) || event.alpha;
-
-    if (alpha == null || Math.abs(alpha - lastAlpha) > 1) {
-    var lat1 = current.latitude * (Math.PI / 180);
-    var lon1 = current.longitude * (Math.PI / 180);
-    var lat2 = targetDetails.lat * (Math.PI / 180);
-    var lon2 = targetDetails.lng * (Math.PI / 180);
-
-    // calculate compass direction
-    var y = Math.sin(lon2 - lon1) * Math.cos(lat2);
-    var x =
-        Math.cos(lat1) * Math.sin(lat2) -
-        Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
-    var bearing = Math.atan2(y, x) * (180 / Math.PI);
-
-    direction = (alpha + bearing + 360) % 360;
-    direction = direction.toFixed(0);
-
-    lastAlpha = alpha;
-
-    var R = 6371; // Radius of the earth in km
-    var dLat = lat2 - lat1; // below
-    var dLon = lon2 - lon1;
-    var a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    distance = R * c; // Distance in km
-    distance = distance * 1000; // Convert to meters    
+// Request permission on iOS to use device orientation
+function startCompass() {
+    try{
+        if (isIOS) {
+            DeviceOrientationEvent.requestPermission()
+                .then((response) => {
+                    if (response === "granted") {
+                        window.addEventListener("deviceorientation", runCalculation);
+                    } else {
+                        alert("Permission denied!");
+                    }
+                })
+                .catch(() => alert("Device orientation not supported"));
+        }
     }
-}   
+    catch(error){
+        console.error(error);
+    }
+    
+}
 
+// Calculate direction to target based on device orientation and player position
+function runCalculation(event) {
+    try {
+        var alpha = Math.abs(360 - event.webkitCompassHeading) || event.alpha;
 
-// starts updating the UI.
+        if (alpha != null && Math.abs(alpha - lastAlpha) > 1) {
+            var lat1 = current.latitude * (Math.PI / 180);
+            var lon1 = current.longitude * (Math.PI / 180);
+            var lat2 = targetDetails.lat * (Math.PI / 180);
+            var lon2 = targetDetails.lng * (Math.PI / 180);
+
+            // Calculate bearing from current position to target position
+            var y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+            var x =
+                Math.cos(lat1) * Math.sin(lat2) -
+                Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+            var bearing = Math.atan2(y, x) * (180 / Math.PI);
+
+            // Update direction with combined alpha and bearing
+            direction = (alpha + bearing + 360) % 360;
+            direction = direction.toFixed(0); // Round to nearest degree
+            
+
+            lastAlpha = alpha;
+        } else{
+            console.log("never called")
+        }
+    } catch (error) {
+        console.error("Error calculating direction:", error);
+    }
+}
+
+// Continuously update the UI to rotate the arrow
 function updateUI() {
-    // Update arrow rotation
     const arrow = document.querySelector(`.arrow`);
     arrow.style.transform = `translate(-50%, -50%) rotate(${direction}deg)`;
-    requestAnimationFrame(updateUI);
+    requestAnimationFrame(updateUI); // Repeat every frame
 }
+
+// Initialize compass and location tracking when DOM loads
+document.addEventListener('DOMContentLoaded', function () {
+    initializeMyApp();
+});
 
 

@@ -478,20 +478,20 @@ const handleOrientationEvent = (rotateDegrees) => {
 
 // Update runCalculation to accept alpha as a parameter
 function calcBearing(lat1, lon1, lat2, lon2) {
-    // Convert latitude and longitude from degrees to radians
-    lat1 = toRadians(lat1);
-    lon1 = toRadians(lon1);
-    lat2 = toRadians(lat2);
-    lon2 = toRadians(lon2);
+    // Convert all latitudes and longitudes from degrees to radians
+    const φ1 = toRadians(lat1);
+    const λ1 = toRadians(lon1);
+    const φ2 = toRadians(lat2);
+    const λ2 = toRadians(lon2);
 
-    // Calculate the bearing
-    let y = Math.sin(lon2 - lon1) * Math.cos(lat2);
-    let x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
-    let bearing = Math.atan2(y, x);
-    bearing = toDegrees(bearing);
-    
-    // Ensure the bearing is within 0-360
-    return (bearing + 360) % 360;
+    const y = Math.sin(λ2 - λ1) * Math.cos(φ2);
+    const x = Math.cos(φ1) * Math.sin(φ2) - 
+              Math.sin(φ1) * Math.cos(φ2) * Math.cos(λ2 - λ1);
+    const θ = Math.atan2(y, x);
+
+    // Convert the angle from radians to degrees and normalize it to 0-360
+    const bearing = (toDegrees(θ) + 360) % 360;
+    return bearing;
 }
 
 function runCalculation(alpha) {

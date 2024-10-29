@@ -10,12 +10,6 @@ let checkRelativePositionID; // ID of the animationFrame that receives the relat
 // Array of Objecst that stores all model information (This prevents having to fetch the JSON multiple times)
 let modelsArray = [];
 
-// Gloabl array of target lat and lng to keep track of the selected target.
-// let targetPos = {
-//     lat: 1.308649149724571,
-//     lng: 103.8495541458054
-// };
-
 // Synchronization flag to control access to the target object
 let isUpdatingTarget = false;
 
@@ -241,13 +235,6 @@ function startUp(){
     const locationDisplay = document.getElementById('location-display');
     locationDisplay.innerHTML = 'Select a model to begin tracking!';
 
-    // call function that finds 
-    // call function that runs game loop
-
-    // Identify the closet target based on distancemsg. 
-    // shouldRunLoop = true; // Set flag to true to allow the loop to run
-    // updateClosestModelLoop();
-
     console.log("START!");
 }
 
@@ -301,9 +288,6 @@ function appLoop() {
     console.log("starting app loop");
     // Retrieve player position and relative position to closest model.
     getPlayerPosition(findDistanceRelativeToModel);
-
-    // Update UI with relative position and distance.
-    // updateUI();
 
     requestAnimationFrame(appLoop);
 }
@@ -408,12 +392,8 @@ function updateTextUIAndModelVisibility() {
         // This keeps all other models invisible because we disabled them from the start and only enable them here.
         if (!(targetDetails.tooClose && targetDetails.tooFar)) {
             modelEntity.object3D.visible = true;
-            // console.log('model is visible');
-            // console.log(modelEntity.getAttribute('visible'));
         } else {
             modelEntity.object3D.visible = false;
-            // console.log('model is not visible');
-            // console.log(modelEntity.getAttribute('visible'));
         }
 
         // change text depending on distance between player and model
@@ -465,164 +445,4 @@ function toRadians(degrees) {
 function toDegrees(radians) {
     return radians * 180 / Math.PI;
 }
-
-
-
-
-
-// Function that is called when a model is selected
-
-
-// function to update the target model information. 
-
-
-
-
-
-
-
-// async function initilizeMyApp()
-// Order
-// 1. Create dropdown containers with models assign to them.
-// 2. Create models within a-frame
-// 3. Start Up Button.
-
-
-
-
-
-
-
-let updateClosestModelLoopID; 
-
-// async function updateClosestModelLoop() {
-//     if(!shouldRunLoop) return; // exit if loop is cancelled
-//     try {
-//         const playerPosition = await getPlayerPosition();
-//         const closestModel = await adjustModelProperties(playerPosition);
-
-//         console.log(closestModel);
-        
-//         // Update the UI with the closest model information
-//         // Math.floor(closestModel.closestDistance)
-//         const updateUI_Models = await updateLocationDisplayUI(closestModel.closestDistance, closestModel.closestModel, closestModel.tooClose, closestModel.tooFar, closestModel.minDistance, closestModel.maxDistance);
-
-//         //Update arrow based on bearing 
-//         // updateArrowUI(playerPosition, closestModel.modelLat, closestModel.modelLng);
-
-//         // Call recursively on the next frame
-//         updateClosestModelLoopID = requestAnimationFrame(updateClosestModelLoop);
-//     } catch (error) {
-//         console.error("Error updating closest model:", error);
-//     }
-// }
-
-function cancelClosestModelLoop(){
-    return new Promise((resolve, reject) => {
-        try{
-            shouldRunLoop = false; // Set the flag to false to stop scheduling new frames
-            cancelAnimationFrame(updateClosestModelLoopID); // Cancel the current frame if it’s pending
-            resolve(true);
-        }
-        catch(error){
-            reject(error);
-        }
-    })
-}
-    
-
-
-
-
-function calculateBearing(playerPos, modelPos){
-    startLat = toRadians(playerPos.lat);
-    startLng = toRadians(playerPos.lng);
-    destLat = toRadians(modelPos.lat);
-    destLng = toRadians(modelPos.lng);
-
-    y = Math.sin(destLng - startLng) * Math.cos(destLat);
-    x = Math.cos(startLat) * Math.sin(destLat) -
-            Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
-    brng = Math.atan2(y, x);
-    brng = toDegrees(brng);
-    return (brng + 360) % 360;
-}
-
-// functions to calcuate angle the arrow should rotate.
-// function calculateBearing(playerPos, modelPos) {
-// //     const lat1 = toRadians(playerPos.lat);
-// //     const lat2 = toRadians(modelPos.lat);
-// //     const deltaLon = toRadians(modelPos.lng - playerPos.lng);
-
-// //     const y = Math.sin(deltaLon) * Math.cos(lat2);
-// //     const x = Math.cos(lat1) * Math.sin(lat2) - 
-// //               Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
-// //     const bearing = Math.atan2(y, x);
-    
-// //     // Convert from radians to degrees and normalize between 0-360
-// //     return (toDegrees(bearing) + 360) % 360;
-// // }
-
-// // function toRadians(degrees) {
-// //     return degrees * (Math.PI / 180);
-// // }
-
-// // function toDegrees(radians) {
-// //     return radians * (180 / Math.PI);
-// // }
-
-
-
-// starts updating the UI.
-// let rotationAngle = 0; // Keep track of the current rotation angle
-
-function updateArrowUI(playerPosition, modelLat, modelLng) {
-    // Update arrow rotation
-
-    const modelPos = {
-        lat: modelLat,  // adjust if necessary based on your data structure
-        lng: modelLng
-    };
-    const rotationAngle = calculateBearing(playerPosition, modelPos);
-    const arrow = document.querySelector(".arrow");
-    // rotationAngle += 1; // Increment the rotation angle
-    arrow.style.transform = `translate(-50%, -50%) rotate(${rotationAngle}deg)`;
-
-    // Keep the rotation between 0 and 360 degrees
-    // if (rotationAngle >= 360) {
-    //     rotationAngle = 0; // Reset to 0 after a full rotation
-    // }
-
-    // Call the function recursively on each animation frame
-    requestAnimationFrame(updateArrowUI);
-}
-
-// async function updateArrowUI(playerPosition, modelLat, modelLng) {
-//     try{  
-//         const playerPosition = await getPlayerPosition();
-//         const closestModelDetails = await adjustModelProperties(playerPosition);
-        
-//         // Assume closestModelDetails includes lat and lng of the closest model
-//         const modelPos = {
-//             lat: closestModelDetails.modelLat,  // adjust if necessary based on your data structure
-//             lng: closestModelDetails.modelLng
-//         };
-
-//         // console.log(playerPosition);
-
-//         // Calculate the bearing angle to the model
-        
-
-//         // Apply rotation to the arrow
-//         const arrow = document.querySelector(".arrow");
-//         arrow.style.transform = `translate(-50%, -50%) rotate(${rotationAngle}deg)`;
-
-//         // Call the function recursively on each animation frame
-//         requestAnimationFrame(updateArrowUI);
-//     } catch (error) {
-//         console.error("Error updating arrow direction:", error);
-//     }
-// }
-
-
 

@@ -449,9 +449,10 @@ var current = { latitude: null, longitude: null };
 // var target = { latitude: 0, longitude: 0 };
 var lastAlpha = 0;
 let direction = 0;
-
+const geolocationOptions = { enableHighAccuracy: true };
 // function to initialize geolocation and device orientation. runs automatically
 function init() {
+    navigator.geolocation.watchPosition(setCurrentPosition, null, geolocationOptions);
     if (window.DeviceOrientationEvent) {
         window.addEventListener(
             "deviceorientation",
@@ -508,7 +509,7 @@ function runCalculation(alpha) {
     direction = (bearing + alpha + 360) % 360;
 
     consoleText = document.getElementById('console-text');
-    consoleText.innerHTML = `Bearing to target: ${bearing}°\nDevice orientation (alpha): ${alpha}°\nCalculated direction for arrow: ${direction}°\ncurrentLat: ${current.latitude}\ncurrentLongitude: ${current.lat}`;
+    consoleText.innerHTML = `Bearing to target: ${bearing}°\nDevice orientation (alpha): ${alpha}°\nCalculated direction for arrow: ${direction}°\ncurrentLat: ${current.latitude}\ncurrentLongitude: ${current.longitude}`;
 
     return direction.toFixed(0); // Round to the nearest degree
 }

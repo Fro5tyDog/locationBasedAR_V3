@@ -276,6 +276,8 @@ const targetDetails = {
 // function to manually select the target model. (Updates the targetDetails)
 function selectedTarget(name){
     try{
+        // hide all previous models
+        renderModelVisibility()
         console.log("selecting target...")
         modelsArray.forEach((model) => {
             if(model.name == name){

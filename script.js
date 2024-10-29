@@ -1,6 +1,7 @@
 // wait for dom to finish loading before loading models and updating UI
 document.addEventListener('DOMContentLoaded', function () {
         initializeMyApp();
+        init();
 });
 
 // IDs to control the check every frame. 
@@ -273,7 +274,6 @@ function selectedTarget(name){
                 targetDetails.max = model.visibilityRange.max;
                 targetDetails.lat = model.lat;
                 targetDetails.lng = model.lng;
-                startCompass();
                 appLoop();
             };
         })
@@ -289,6 +289,8 @@ function appLoop() {
     console.log("starting app loop");
     // Retrieve player position and relative position to closest model.
     getPlayerPosition(findDistanceRelativeToModel);
+
+    startCompass();
 
     requestAnimationFrame(appLoop);
 }
@@ -455,7 +457,6 @@ var direction = 0;
 const isIOS =
     navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
     navigator.userAgent.match(/AppleWebKit/);
-// const startBtn = document.querySelector(".start-btn");
 const geolocationOptions = { enableHighAccuracy: true };
 
 // function to initialize geolocation and device orientation. runs automatically
@@ -474,6 +475,7 @@ function init() {
 // on clicking the start compass button, request permission to use device orientation.
 // only IOS devices need to click the button
 function startCompass() {
+    console.log("start compass");
     if (isIOS) {
         DeviceOrientationEvent.requestPermission()
             .then((response) => {
@@ -532,9 +534,9 @@ function runCalculation(event) {
 // starts updating the UI.
 function updateUI() {
     // Update arrow rotation
-    const arrow = document.querySelector(".arrow");
+    const arrow = document.querySelector(`.arrow`);
     arrow.style.transform = `translate(-50%, -50%) rotate(${direction}deg)`;
     requestAnimationFrame(updateUI);
 }
 
-init();
+

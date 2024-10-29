@@ -505,7 +505,7 @@ function runCalculation(alpha) {
 
     // Calculate the direction by adjusting the bearing with the phone's orientation
     
-    direction = (bearing - alpha + 360) % 360;
+    direction = (bearing - alpha - 360) % 360;
 
     consoleText = document.getElementById('console-text');
     consoleText.innerHTML = `Bearing to target: ${bearing}°\nDevice orientation (alpha): ${alpha}°\nCalculated direction for arrow: ${direction}°`;

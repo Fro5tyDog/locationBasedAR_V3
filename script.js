@@ -506,7 +506,7 @@ function runCalculation(alpha) {
     const bearing = calcBearing(lat1, long1, lat2, long2);
 
     // Adjust the bearing by alpha to get the final direction
-    direction = (bearing - alpha + 360) % 360;
+    direction = (bearing - alpha) % 360;
     
     return direction.toFixed(0); // Rounded to the nearest degree
 }

@@ -445,7 +445,7 @@ function toDegrees(radians) {
 
 // ##################################################################################################
 var current = { latitude: null, longitude: null };
-var target = { latitude: 0, longitude: 0 };
+// var target = { latitude: 0, longitude: 0 };
 var lastAlpha = 0;
 var direction = 0;
 
@@ -477,36 +477,31 @@ const handleOrientationEvent = (rotateDegrees) => {
 
 // Update runCalculation to accept alpha as a parameter
 function runCalculation(alpha) {
-    if (alpha == null || Math.abs(alpha - lastAlpha) > 1) {
+    if (alpha !== null && Math.abs(alpha - lastAlpha) > 1) {
+        // Convert lat/lon from degrees to radians
         var lat1 = current.latitude * (Math.PI / 180);
         var lon1 = current.longitude * (Math.PI / 180);
         var lat2 = targetDetails.lat * (Math.PI / 180);
         var lon2 = targetDetails.lng * (Math.PI / 180);
 
-        // Calculate compass direction
+        // Calculate the bearing angle to the target in degrees
         var y = Math.sin(lon2 - lon1) * Math.cos(lat2);
         var x =
             Math.cos(lat1) * Math.sin(lat2) -
             Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
         var bearing = Math.atan2(y, x) * (180 / Math.PI);
 
-        // Update direction using alpha and bearing
-        direction = (alpha + bearing + 360) % 360;
-        direction = direction.toFixed(0);
+        // Adjust bearing to be within 0-360 degrees
+        bearing = (bearing + 360) % 360;
+
+        // Calculate the final direction by adjusting bearing with alpha
+        direction = (bearing - alpha + 360) % 360;
+        direction = direction.toFixed(0); // Round to nearest degree
 
         lastAlpha = alpha;
-
-        // Calculate distance (if needed for other uses)
-        var R = 6371; // Radius of the Earth in km
-        var dLat = lat2 - lat1;
-        var dLon = lon2 - lon1;
-        var a =
-            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        distance = R * c * 1000; // Distance in meters
     }
 }
+
 
 // takes values retrieved from th geolocation API and stores them in the current object
 // for use in calculating compass direction and distance

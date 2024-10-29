@@ -508,7 +508,7 @@ function runCalculation(alpha) {
     direction = (bearing + alpha + 360) % 360;
 
     consoleText = document.getElementById('console-text');
-    consoleText.innerHTML = `Bearing to target: ${bearing}°\nDevice orientation (alpha): ${alpha}°\nCalculated direction for arrow: ${direction}°`;
+    consoleText.innerHTML = `Bearing to target: ${bearing}°\nDevice orientation (alpha): ${alpha}°\nCalculated direction for arrow: ${direction}°\ncurrentLat: ${current.latitude}\ncurrentLongitude: ${current.lat}`;
 
     return direction.toFixed(0); // Round to the nearest degree
 }

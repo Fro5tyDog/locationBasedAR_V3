@@ -476,30 +476,39 @@ const handleOrientationEvent = (rotateDegrees) => {
 };
 
 // Update runCalculation to accept alpha as a parameter
+function calcBearing(lat1, long1, lat2, long2) {
+    // Convert latitude and longitude to radians
+    lat1 = toRadians(lat1);
+    long1 = toRadians(long1);
+    lat2 = toRadians(lat2);
+    long2 = toRadians(long2);
+    
+    // Calculate the bearing
+    let bearing = Math.atan2(
+        Math.sin(long2 - long1) * Math.cos(lat2),
+        Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(long2 - long1)
+    );
+    
+    // Convert the bearing to degrees
+    bearing = toDegrees(bearing);
+    
+    // Ensure the bearing is positive
+    return (bearing + 360) % 360;
+}
+
 function runCalculation(alpha) {
-    if (alpha !== null && Math.abs(alpha - lastAlpha) > 1) {
-        // Convert lat/lon from degrees to radians
-        var lat1 = current.latitude * (Math.PI / 180);
-        var lon1 = current.longitude * (Math.PI / 180);
-        var lat2 = targetDetails.lat * (Math.PI / 180);
-        var lon2 = targetDetails.lng * (Math.PI / 180);
+    const lat1 = current.latitude;
+    const long1 = current.longitude;
+    const lat2 = targetDetails.lat;
+    const long2 = targetDetails.lng;
 
-        // Calculate the bearing angle to the target in degrees
-        var y = Math.sin(lon2 - lon1) * Math.cos(lat2);
-        var x =
-            Math.cos(lat1) * Math.sin(lat2) -
-            Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
-        var bearing = Math.atan2(y, x) * (180 / Math.PI);
+    // Calculate the bearing to the target
+    const bearing = calcBearing(lat1, long1, lat2, long2);
 
-        // Adjust bearing to be within 0-360 degrees
-        bearing = (bearing + 360) % 360;
-
-        // Calculate the final direction by adjusting bearing with alpha
-        direction = (bearing - alpha + 360) % 360;
-        direction = direction.toFixed(0); // Round to nearest degree
-
-        lastAlpha = alpha;
-    }
+    // Adjust the bearing by alpha to get the final direction
+    const direction = (bearing - alpha + 360) % 360;
+    
+    return direction.toFixed(0); // Rounded to the nearest degree
 }
 
 

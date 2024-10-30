@@ -503,22 +503,30 @@ function calcBearing(lat1, lon1, lat2, lon2) {
 }
 
 function runCalculation(alpha) {
+
+
     const lat1 = current.latitude;
     const lon1 = current.longitude;
     const lat2 = targetDetails.lat;
     const lon2 = targetDetails.lng;
+    consoleText = document.getElementById('console-text');
 
     // Calculate the bearing to the target
-    const bearing = calcBearing(lat1, lon1, lat2, lon2);
-
-    // Calculate the direction by adjusting the bearing with the phone's orientation
+    if(lat1 != null && lon1 != null && lat2 != null && lon2){
+        const bearing = calcBearing(lat1, lon1, lat2, lon2);
+        // Calculate the direction by adjusting the bearing with the phone's orientation
     
-    direction = (bearing - alpha + 360) % 360;
+        direction = (bearing - alpha + 360) % 360;
 
-    consoleText = document.getElementById('console-text');
-    consoleText.innerHTML = `Bearing to target: ${bearing}°\nDevice orientation (alpha): ${alpha}°\nCalculated direction for arrow: ${direction}°\ncurrentLat: ${current.latitude}\ncurrentLongitude: ${current.longitude}`;
+        
+        consoleText.innerHTML = `Bearing to target: ${bearing}°\nDevice orientation (alpha): ${alpha}°\nCalculated direction for arrow: ${direction}°\ncurrentLat: ${current.latitude}\ncurrentLongitude: ${current.longitude}`;
 
-    direction.toFixed(0); // Round to the nearest degree
+        direction.toFixed(0); // Round to the nearest degree
+    } else {
+        consoleText.innerHTML = "Cannot calculate direction to target because geolocation data is not available.";
+    }
+    
+    
 
 }
 

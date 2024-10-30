@@ -273,7 +273,6 @@ function selectedTarget(name){
                 targetDetails.lat = model.lat;
                 targetDetails.lng = model.lng;
                 appLoop();
-                init();
             };
         })
     }
@@ -516,7 +515,7 @@ function runCalculation(alpha) {
         const bearing = calcBearing(lat1, lon1, lat2, lon2);
         // Calculate the direction by adjusting the bearing with the phone's orientation
     
-        direction = (bearing - alpha + 360) % 360;
+        direction = (alpha - bearing) % 360;
 
         
         consoleText.innerHTML = `Bearing to target: ${bearing}°\nDevice orientation (alpha): ${alpha}°\nCalculated direction for arrow: ${direction}°\ncurrentLat: ${current.latitude}\ncurrentLongitude: ${current.longitude}`;

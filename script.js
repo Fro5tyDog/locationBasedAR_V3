@@ -373,7 +373,7 @@ function validateIfTooClose(updateTextUIAndModelVisibility){
             }
         }
         console.log("Validated player distance to target");
-        updateTextUIAndModelVisibility(init);
+        updateTextUIAndModelVisibility();
     }
     catch(error){
         console.error(error);
@@ -381,7 +381,7 @@ function validateIfTooClose(updateTextUIAndModelVisibility){
 }
 
 // Function that updates the text UI and model visbility below the arrow 
-function updateTextUIAndModelVisibility(init) {
+function updateTextUIAndModelVisibility() {
     try{
         const locationDisplay = document.getElementById('location-display');
 
@@ -407,8 +407,6 @@ function updateTextUIAndModelVisibility(init) {
         } else{
             locationDisplay.innerHTML = "No models found!";
         }
-
-        init();
     } 
     catch(error){
         reject(error);
@@ -511,7 +509,7 @@ function runCalculation(alpha) {
     consoleText = document.getElementById('console-text');
 
     // Calculate the bearing to the target
-    if(lat1 != null && lon1 != null && lat2 != null && lon2){
+    if(lat1 != null && lon1 != null && lat2 != null && lon2 != null){
         const bearing = calcBearing(lat1, lon1, lat2, lon2);
         // Calculate the direction by adjusting the bearing with the phone's orientation
     
@@ -549,6 +547,7 @@ function updateUI() {
 // Initialize compass and location tracking when DOM loads
 document.addEventListener('DOMContentLoaded', function () {
     initializeMyApp();
+    init();
 });
 
 

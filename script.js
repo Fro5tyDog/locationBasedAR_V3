@@ -12,7 +12,7 @@ let isUpdatingTarget = false;
 // 1. Render all the models. 
 // 2. Create Drop down containers with all the models
 // 3. Create Map 
-// 3. Create the start up functionality. 
+// 4. Create the start up functionality. 
 async function initializeMyApp(){
 
     // 1.
@@ -22,8 +22,9 @@ async function initializeMyApp(){
     const dropdownRender = await createDropdownContainer();
 
     // 3.
+    // const mapRender = await mapRenderImage();
 
-    // 3.
+    // 4.
     const startUpScreen = await createStartScreen();
 
 }
@@ -200,18 +201,83 @@ function thumbnailClick(event){
 async function selectNewModel(name){
 
     const locationDisplay = document.getElementById('location-display');
-    locationDisplay.innerHTML = `Calculating Distance to ${name}`;
+    locationDisplay.innerHTML = `Calculating distance to ${name}`;
     // call function to select target
     selectedTarget(name);
 }
 
 // Step 3 --------------------------------
+// Render the map
+// let mapHasBeenOpened = false;
+// function mapRenderImage(){
+//     return new Promise((resolve, reject) => {
+//         try{
+//             const mapIcon = document.getElementById('map-render-image');
+//             const mapContainer = document.getElementById('map-image-container');
+//             const topLeftCircle = document.getElementById('top-left-circle');
+//             const circleCenter = document.getElementById('circle-center');
+
+//             mapIcon.addEventListener('click', () => {
+//                 if(!mapHasBeenOpened){
+//                     mapHasBeenOpened = true;
+//                     const map = document.createElement('img');
+//                     map.src = `./assets/map/map.png`; 
+//                     map.alt = 'map with all the targets';
+//                     map.classList.add('map-image');
+//                     mapContainer.appendChild(map);
+//                     // apply all logic in separate function.
+//                     map.addEventListener('click', mapContainerClick)
+//                     circleCenter.classList.add('blur');
+//                     topLeftCircle.classList.add('blur');
+//                     topLeftCircle.classList.add('disable-click');
+//                     console.log(mapHasBeenOpened);
+//                 } else{
+//                     while (mapContainer.hasChildNodes()) {
+//                         mapContainer.removeChild(mapContainer.firstChild);
+//                         circleCenter.classList.remove('blur');
+//                         topLeftCircle.classList.remove('blur');
+//                         topLeftCircle.classList.remove('disable-click');
+//                         mapHasBeenOpened = false;
+//                     }
+//                 }
+                
+//             });
+
+//             resolve(true);
+//         }
+//         catch(error){
+//             console.error(error);
+//             reject(error);
+//         }
+//     })
+// }
+
+// // Allow the user to close the map if they want to just press on the map.
+// function mapContainerClick() {
+//     console.log("clicked on map");
+//     const mapContainer = document.getElementById('map-image-container');
+//     const circleCenter = document.getElementById('circle-center');
+//     const topLeftCircle = document.getElementById('top-left-circle');
+
+//     while(mapContainer.hasChildNodes()){
+//         mapContainer.removeChild(mapContainer.firstChild);
+//         circleCenter.classList.remove('blur');
+//         topLeftCircle.classList.remove('blur');
+//         topLeftCircle.classList.remove('disable-click');
+//         mapHasBeenOpened = false;
+//     }
+    
+// }
+
+// Step 4 --------------------------------
 // Start Up Button
 function createStartScreen(){
     return new Promise((resolve, reject) => {
         // adding greyed-out class to prevent person from clicking on icons
         document.querySelector('.circle-container').classList.add('greyed-out');
         document.getElementById('top-left-circle').classList.add('greyed-out');
+        document.getElementById('top-right-circle').classList.add('greyed-out');
+        document.querySelector('.circle-container').classList.add('blur');
         try{
             // Handle "Tap to Start" button click
             document.getElementById('start-button').addEventListener('click', startUp);
@@ -230,6 +296,8 @@ function startUp(){
     // Remove the "greyed-out" class from other UI elements
     document.querySelector('.circle-container').classList.remove('greyed-out');
     document.getElementById('top-left-circle').classList.remove('greyed-out');
+    document.getElementById('top-right-circle').classList.remove('greyed-out');
+    document.querySelector('.circle-container').classList.remove('blur');
 
     const locationDisplay = document.getElementById('location-display');
     locationDisplay.innerHTML = 'Select a model to begin tracking!';

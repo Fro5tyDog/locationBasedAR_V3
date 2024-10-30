@@ -20,15 +20,15 @@
         <div class="circle" id="top-left-circle">
             <img src="./assets/ui_Images/3dModels.png" alt="3D Models"> <!-- Top Left Circle Image -->
         </div> 
-        <div class="circle circle-center">
+        <div class="circle circle-center" id="circle-center">
             <div class="arrow"></div><br>
             <div class="text-container">
                 <div id="location-display"></div><br> <!-- Text Below the Middle Circle -->
                 <div id="console-text"></div>
             </div>
         </div>
-        <div class="circle">
-            <img src="./assets/ui_Images/mapIcon.png" alt="Map Icon"> <!-- Top Right Circle Image -->
+        <div class="circle" id="top-right-circle"> 
+            <img id="map-render-image" src="./assets/ui_Images/mapIcon.png" alt="Map Icon"> <!-- Top Right Circle Image -->
         </div> 
     </div>
 
@@ -37,6 +37,10 @@
     <div class="start">
         <img src="./assets/ui_Images/mapIcon.png">
         <button id="start-button">Tap to Start</button>
+    </div>
+
+    <div id="map-image-container">
+
     </div>
 
     <a-scene 

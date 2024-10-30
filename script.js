@@ -1,13 +1,5 @@
-
-// IDs to control the check every frame. 
-let checkPlayerLocationID; // ID of the animationFrame that receives player location data.
-let checkRelativePositionID; // ID of the animationFrame that receives the relative position between the player and the models.
-
 // Array of Objecst that stores all model information (This prevents having to fetch the JSON multiple times)
 let modelsArray = [];
-
-// Synchronization flag to control access to the target object
-let isUpdatingTarget = false;
 
 // 1. Render all the models. 
 // 2. Create Drop down containers with all the models
@@ -594,15 +586,6 @@ function runCalculation(alpha) {
     
 
 }
-
-
-// takes values retrieved from th geolocation API and stores them in the current object
-// for use in calculating compass direction and distance
-// function setCurrentPosition(position) {
-//     current.latitude = position.coords.latitude;
-//     current.longitude = position.coords.longitude;
-// }
-
 
 // starts updating the UI.
 function updateUI() {

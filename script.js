@@ -208,6 +208,7 @@ function mapRenderImage(){
             const mapContainer = document.getElementById('map-image-container');
             const topLeftCircle = document.getElementById('top-left-circle');
             const circleCenter = document.getElementById('circle-center');
+            const dropdownCircles = document.querySelectorAll('.dropdown-circle');
 
             mapIcon.addEventListener('click', () => {
                 if(!mapHasBeenOpened){
@@ -222,6 +223,10 @@ function mapRenderImage(){
                     circleCenter.classList.add('blur');
                     topLeftCircle.classList.add('blur');
                     topLeftCircle.classList.add('disable-click');
+                    dropdownCircles.forEach(circle => {
+                        circle.classList.add('disable-click');
+                        circle.classList.add('blur');
+                    });
                     console.log(mapHasBeenOpened);
                 } else{
                     while (mapContainer.hasChildNodes()) {
@@ -229,6 +234,10 @@ function mapRenderImage(){
                         circleCenter.classList.remove('blur');
                         topLeftCircle.classList.remove('blur');
                         topLeftCircle.classList.remove('disable-click');
+                        dropdownCircles.forEach(circle => {
+                            circle.classList.remove('disable-click');
+                            circle.classList.remove('blur');
+                        });
                         mapHasBeenOpened = false;
                     }
                 }
@@ -250,12 +259,17 @@ function mapContainerClick() {
     const mapContainer = document.getElementById('map-image-container');
     const circleCenter = document.getElementById('circle-center');
     const topLeftCircle = document.getElementById('top-left-circle');
+    const dropdownCircles = document.querySelectorAll('.dropdown-circle');
 
     while(mapContainer.hasChildNodes()){
         mapContainer.removeChild(mapContainer.firstChild);
         circleCenter.classList.remove('blur');
         topLeftCircle.classList.remove('blur');
         topLeftCircle.classList.remove('disable-click');
+        dropdownCircles.forEach(circle => {
+            circle.classList.remove('disable-click');
+            circle.classList.remove('blur');
+        });
         mapHasBeenOpened = false;
     }
     

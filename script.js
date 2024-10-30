@@ -22,7 +22,7 @@ async function initializeMyApp(){
     const dropdownRender = await createDropdownContainer();
 
     // 3.
-    // const mapRender = await mapRenderImage();
+    const mapRender = await mapRenderImage();
 
     // 4.
     const startUpScreen = await createStartScreen();
@@ -208,66 +208,66 @@ async function selectNewModel(name){
 
 // Step 3 --------------------------------
 // Render the map
-// let mapHasBeenOpened = false;
-// function mapRenderImage(){
-//     return new Promise((resolve, reject) => {
-//         try{
-//             const mapIcon = document.getElementById('map-render-image');
-//             const mapContainer = document.getElementById('map-image-container');
-//             const topLeftCircle = document.getElementById('top-left-circle');
-//             const circleCenter = document.getElementById('circle-center');
+let mapHasBeenOpened = false;
+function mapRenderImage(){
+    return new Promise((resolve, reject) => {
+        try{
+            const mapIcon = document.getElementById('map-render-image');
+            const mapContainer = document.getElementById('map-image-container');
+            const topLeftCircle = document.getElementById('top-left-circle');
+            const circleCenter = document.getElementById('circle-center');
 
-//             mapIcon.addEventListener('click', () => {
-//                 if(!mapHasBeenOpened){
-//                     mapHasBeenOpened = true;
-//                     const map = document.createElement('img');
-//                     map.src = `./assets/map/map.png`; 
-//                     map.alt = 'map with all the targets';
-//                     map.classList.add('map-image');
-//                     mapContainer.appendChild(map);
-//                     // apply all logic in separate function.
-//                     map.addEventListener('click', mapContainerClick)
-//                     circleCenter.classList.add('blur');
-//                     topLeftCircle.classList.add('blur');
-//                     topLeftCircle.classList.add('disable-click');
-//                     console.log(mapHasBeenOpened);
-//                 } else{
-//                     while (mapContainer.hasChildNodes()) {
-//                         mapContainer.removeChild(mapContainer.firstChild);
-//                         circleCenter.classList.remove('blur');
-//                         topLeftCircle.classList.remove('blur');
-//                         topLeftCircle.classList.remove('disable-click');
-//                         mapHasBeenOpened = false;
-//                     }
-//                 }
+            mapIcon.addEventListener('click', () => {
+                if(!mapHasBeenOpened){
+                    mapHasBeenOpened = true;
+                    const map = document.createElement('img');
+                    map.src = `./assets/map/map.png`; 
+                    map.alt = 'map with all the targets';
+                    map.classList.add('map-image');
+                    mapContainer.appendChild(map);
+                    // apply all logic in separate function.
+                    map.addEventListener('click', mapContainerClick)
+                    circleCenter.classList.add('blur');
+                    topLeftCircle.classList.add('blur');
+                    topLeftCircle.classList.add('disable-click');
+                    console.log(mapHasBeenOpened);
+                } else{
+                    while (mapContainer.hasChildNodes()) {
+                        mapContainer.removeChild(mapContainer.firstChild);
+                        circleCenter.classList.remove('blur');
+                        topLeftCircle.classList.remove('blur');
+                        topLeftCircle.classList.remove('disable-click');
+                        mapHasBeenOpened = false;
+                    }
+                }
                 
-//             });
+            });
 
-//             resolve(true);
-//         }
-//         catch(error){
-//             console.error(error);
-//             reject(error);
-//         }
-//     })
-// }
+            resolve(true);
+        }
+        catch(error){
+            console.error(error);
+            reject(error);
+        }
+    })
+}
 
-// // Allow the user to close the map if they want to just press on the map.
-// function mapContainerClick() {
-//     console.log("clicked on map");
-//     const mapContainer = document.getElementById('map-image-container');
-//     const circleCenter = document.getElementById('circle-center');
-//     const topLeftCircle = document.getElementById('top-left-circle');
+// Allow the user to close the map if they want to just press on the map.
+function mapContainerClick() {
+    console.log("clicked on map");
+    const mapContainer = document.getElementById('map-image-container');
+    const circleCenter = document.getElementById('circle-center');
+    const topLeftCircle = document.getElementById('top-left-circle');
 
-//     while(mapContainer.hasChildNodes()){
-//         mapContainer.removeChild(mapContainer.firstChild);
-//         circleCenter.classList.remove('blur');
-//         topLeftCircle.classList.remove('blur');
-//         topLeftCircle.classList.remove('disable-click');
-//         mapHasBeenOpened = false;
-//     }
+    while(mapContainer.hasChildNodes()){
+        mapContainer.removeChild(mapContainer.firstChild);
+        circleCenter.classList.remove('blur');
+        topLeftCircle.classList.remove('blur');
+        topLeftCircle.classList.remove('disable-click');
+        mapHasBeenOpened = false;
+    }
     
-// }
+}
 
 // Step 4 --------------------------------
 // Start Up Button

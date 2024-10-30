@@ -11,6 +11,7 @@ let isUpdatingTarget = false;
 
 // 1. Render all the models. 
 // 2. Create Drop down containers with all the models
+// 3. Create Map 
 // 3. Create the start up functionality. 
 async function initializeMyApp(){
 
@@ -19,6 +20,8 @@ async function initializeMyApp(){
     
     // 2.
     const dropdownRender = await createDropdownContainer();
+
+    // 3.
 
     // 3.
     const startUpScreen = await createStartScreen();
@@ -312,6 +315,8 @@ function getPlayerPosition(findDistanceRelativeToModel){
                 lat: position.latitude, 
                 lng: position.longitude
             };
+            current.latitude = playerPos.lat;
+            current.longitude = playerPos.lng;
             
             console.log("Got player position");
             findDistanceRelativeToModel(playerPos, validateIfTooClose);
@@ -369,7 +374,7 @@ function validateIfTooClose(updateTextUIAndModelVisibility){
             }
         }
         console.log("Validated player distance to target");
-        updateTextUIAndModelVisibility();
+        updateTextUIAndModelVisibility(init);
     }
     catch(error){
         console.error(error);
@@ -377,7 +382,7 @@ function validateIfTooClose(updateTextUIAndModelVisibility){
 }
 
 // Function that updates the text UI and model visbility below the arrow 
-function updateTextUIAndModelVisibility() {
+function updateTextUIAndModelVisibility(init) {
     try{
         const locationDisplay = document.getElementById('location-display');
 
@@ -403,6 +408,8 @@ function updateTextUIAndModelVisibility() {
         } else{
             locationDisplay.innerHTML = "No models found!";
         }
+
+        init();
     } 
     catch(error){
         reject(error);
@@ -449,10 +456,10 @@ var current = { latitude: null, longitude: null };
 // var target = { latitude: 0, longitude: 0 };
 var lastAlpha = 0;
 let direction = 0;
-const geolocationOptions = { enableHighAccuracy: true };
+// const geolocationOptions = { enableHighAccuracy: true };
 // function to initialize geolocation and device orientation. runs automatically
 function init() {
-    navigator.geolocation.watchPosition(setCurrentPosition, null, geolocationOptions);
+    // navigator.geolocation.watchPosition(setCurrentPosition, null, geolocationOptions);
     if (window.DeviceOrientationEvent) {
         window.addEventListener(
             "deviceorientation",
@@ -517,10 +524,10 @@ function runCalculation(alpha) {
 
 // takes values retrieved from th geolocation API and stores them in the current object
 // for use in calculating compass direction and distance
-function setCurrentPosition(position) {
-    current.latitude = position.coords.latitude;
-    current.longitude = position.coords.longitude;
-}
+// function setCurrentPosition(position) {
+//     current.latitude = position.coords.latitude;
+//     current.longitude = position.coords.longitude;
+// }
 
 
 // starts updating the UI.
